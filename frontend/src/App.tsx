@@ -1,15 +1,13 @@
-import Background from "./components/background"
-import Todo from "./components/todo-board"
+import Background from "./components/background";
+import Todo from "./components/todo-board";
 
 function App() {
-
   return (
     <>
-      <Background/>
-      <Todo/>
+      <Background />
+      <Todo />
     </>
- 
-  )
+  );
 }
 
-export default App
+export default App;
