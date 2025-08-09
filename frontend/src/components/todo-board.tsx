@@ -1,5 +1,5 @@
 import { PackagePlus, Package, PackageCheck, Send, Trash } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Todo {
   id: number;
@@ -8,13 +8,30 @@ interface Todo {
 }
 
 const Todo = () => {
-  const [deliveredCount, setDeliveredCount] = useState(0);
+  const [deliveredCount, setDeliveredCount] = useState(() => {
+    const saved = localStorage.getItem('deliveredCount');
+    return saved ? JSON.parse(saved) : 0;
+  });
 
   // Stores current input (our todo)
   const [inputText, setInputText] = useState("");
 
   // Stpres all todos
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [todos, setTodos] = useState<Todo[]>(() => {
+    const saved = localStorage.getItem('todos');
+    return saved ? JSON.parse(saved) : [];
+
+  });
+
+  // Save todos to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
+
+  // Save delivered count whenever it changes
+  useEffect(() => {
+    localStorage.setItem('deliveredCount', deliveredCount.toString());
+  }, [deliveredCount]);
 
   const addDelivery = () => {
     setDeliveredCount(deliveredCount + 1);
@@ -59,7 +76,7 @@ const Todo = () => {
       deleteTodo(id);
     }
   };
-
+  
   return (
     <div className="font-geist flex flex-col items-center mt-50">
       <div className="text-8xl text-black mb-10 flex flex-row">
@@ -82,33 +99,48 @@ const Todo = () => {
         </button>
       </div>
 
-      <div className="flex flex-col justify-center gap-5 h-auto pt-5 w-auto">
+      <div className="flex flex-col justify-center gap-5 h-auto pt-5 w-auto items-center">
         {todos.map((todo) => (
-          <div
-            key={todo.id}
-            className="rounded-lg border-black border-1 flex items-center w-140 h-auto p-4 justify-between pl-5 pr-5"
-          >
-            <div className="flex-row flex items-center gap-10">
+          <div className="flex flex-row">
+            <div className="flex justify-center px-2 h-auto border-1 border-r-0 rounded-l-lg bg-red-200 border-red-500">
               <button
-                className="cursor-pointer rounded-full border-1 p-1"
-                onClick={() => toggleFinish(todo.id)}
+                className="cursor-pointer text-red-700"
+                onClick={() => deleteTodo(todo.id)}
               >
-                {todo.isFinished ? <PackageCheck /> : <Package />}
+                <Trash size={16} />
               </button>
-
-              <div
-                className={`flex w-auto ${todo.isFinished ? "line-through text-gray-400" : ""}`}
-              >
-                {todo.text}
-              </div>
             </div>
 
-            <button
-              className={`${todo.isFinished ? "text-black cursor-pointer" : "text-gray-200 cursor-default"}`}
-              onClick={() => sendTodo(todo.id)}
+            <div
+              key={todo.id}
+              className="rounded-r-lg border-black border-1 flex items-center w-140 h-auto p-4 justify-between pl-5 pr-5"
             >
-              <Send />
-            </button>
+              <div className="flex-row flex items-center gap-10">
+                <button
+                  className={`cursor-pointer rounded-full border-1 p-1 transition-all duration-300 ${todo.isFinished ? "bg-green-200 border-green-500" : ""}`}
+                  onClick={() => toggleFinish(todo.id)}
+                >
+                  {todo.isFinished ? (
+                    <PackageCheck className="text-green-500" />
+                  ) : (
+                    <Package />
+                  )}
+                </button>
+
+                <div
+                  className={`flex w-95 overflow-hidden h-auto ${todo.isFinished ? "line-through text-gray-400" : ""}`}
+                >
+                  {todo.text}
+                </div>
+              </div>
+
+              <button
+                className={`${todo.isFinished ? "text-black cursor-pointer hover:rotate-45 hover:text-blue-500 duration-500 transition-all" : "text-gray-200 cursor-default"}`}
+                onClick={() => sendTodo(todo.id)}
+              >
+                <Send />
+              </button>
+            </div>
           </div>
         ))}
       </div>
