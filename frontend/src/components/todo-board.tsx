@@ -85,7 +85,7 @@ const Todo = () => {
     <div className="font-geist flex flex-col items-center mt-50">
 
       {/*Color of the day changes depending on how many tasks set in that day*/}
-      <div className="flex flex-row gap-7">
+      <div className="flex flex-row gap-7 mb-2">
         {days.map((day) => (
           <div 
             key={day}
