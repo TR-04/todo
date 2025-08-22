@@ -1,5 +1,3 @@
-Todo made in 24hrs
+Packages
 
-Changes in future...
-
-also bc everyone makes a todo at some point 💀
+A todo thats based around delivering packages ( not fully implemented yet :[ )
