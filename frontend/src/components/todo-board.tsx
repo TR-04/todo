@@ -1,5 +1,6 @@
-import { PackagePlus, Package, PackageCheck, Send, Trash } from "lucide-react";
+import { PackagePlus, Package, PackageCheck, Send, Trash, FunnelPlus, ArrowDownUp, CircleOff, BookCheck } from "lucide-react";
 import { useState, useEffect } from "react";
+import TodoPopup from "./todo-popup";
 
 interface Todo {
   id: number;
@@ -8,13 +9,12 @@ interface Todo {
 }
 
 const Todo = () => {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
   const [deliveredCount, setDeliveredCount] = useState(() => {
     const saved = localStorage.getItem('deliveredCount');
     return saved ? JSON.parse(saved) : 0;
   });
-
-  // Stores current input (our todo)
-  const [inputText, setInputText] = useState("");
 
   // Stpres all todos
   const [todos, setTodos] = useState<Todo[]>(() => {
@@ -46,22 +46,21 @@ const Todo = () => {
     );
   };
 
-  const HandleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      addTodo();
-    }
-  };
+  // const HandleKeyDown = (e: React.KeyboardEvent) => {
+  //   if (e.key === "Enter") {
+  //     addTodoPopup();
+  //   }
+  // };
 
-  const addTodo = () => {
+  const addTodoPopup = (text: string) => {
     // Check input is not blank
-    if (inputText.trim()) {
+    if (text.trim()) {
       const newTodo: Todo = {
         id: Date.now(),
-        text: inputText,
+        text: text,
         isFinished: false,
       };
       setTodos([...todos, newTodo]);
-      setInputText("");
     }
   };
 
@@ -79,23 +78,34 @@ const Todo = () => {
   
   return (
     <div className="font-geist flex flex-col items-center mt-50">
-      <div className="text-8xl text-black mb-10 flex flex-row">
+      <div className="text-8xl text-black mb-5 flex flex-row">
         {deliveredCount} delivered
       </div>
 
-      <div className="flex flex-row gap-5">
-        <search className="">
-          <input
-            className="focus:outline-none border-b border-black w-120"
-            type="text"
-            placeholder="New package"
-            value={inputText}
-            onKeyDown={HandleKeyDown}
-            onChange={(e) => setInputText(e.target.value)}
-          />
-        </search>
-        <button className="cursor-pointer" onClick={addTodo}>
-          <PackagePlus />
+      <div className="flex flex-row gap-7">
+        <button className="cursor-pointer flex flex-row gap-2" onClick={() => setIsPopupOpen(true)}>
+          Filter
+          <FunnelPlus size={22} />
+        </button>
+
+        <button className="cursor-pointer flex flex-row gap-2" onClick={() => setIsPopupOpen(true)}>
+          Sort
+          <ArrowDownUp size={22} />
+        </button>
+
+        <button className="cursor-pointer flex flex-row gap-2" onClick={() => setIsPopupOpen(true)}>
+          Cancelled
+          <CircleOff size={22} />
+        </button>
+
+        <button className="cursor-pointer flex flex-row gap-2" onClick={() => setIsPopupOpen(true)}>
+          Finished
+          <BookCheck size={22} />
+        </button>
+
+        <button className="cursor-pointer flex flex-row gap-2" onClick={() => setIsPopupOpen(true)}>
+          Create
+          <PackagePlus size={22} />
         </button>
       </div>
 
@@ -144,6 +154,14 @@ const Todo = () => {
           </div>
         ))}
       </div>
+
+      <TodoPopup
+        isOpen={isPopupOpen}
+        close={()=>setIsPopupOpen(false)}
+        submit={addTodoPopup}
+      />
+
+
     </div>
   );
 };
