@@ -14,7 +14,7 @@ const Todo = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState("All");
 
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "All"];
 
   const [deliveredCount, setDeliveredCount] = useState(() => {
     const saved = localStorage.getItem('deliveredCount');
@@ -99,16 +99,7 @@ const Todo = () => {
             {day}
           </div>
         ))}
-        <div 
-          className={`flex rounded-full border-1 p-3 h-10 w-10 justify-center items-center cursor-pointer select-none ${
-            selectedDay === "All" 
-              ? "bg-blue-200 border-blue-500 text-blue-700" 
-              : "hover:bg-gray-100"
-          }`}
-          onClick={() => setSelectedDay("All")}
-        >
-          All
-        </div>
+        
       </div>
       
       <div className="text-8xl text-black mb-5 flex flex-row select-none">
@@ -169,9 +160,9 @@ const Todo = () => {
                   >
                     {todo.text}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1 select-none flex gap-2">
-                    <span>{todo.day}</span>
-                    {todo.deadline && <span>•</span>}
+                  <div className="text-xs text-gray-500 mt-1 select-none flex gap-1">
+                    <span>{todo.day === "-" ? "" : todo.day}</span>
+                    {todo.deadline && todo.day !== "-" && <span>•</span>}
 
                     {todo.deadline && <span> Due: {new Date(todo.deadline).toLocaleDateString('en-GB')}</span>}
                   </div>
@@ -193,7 +184,7 @@ const Todo = () => {
         isOpen={isPopupOpen}
         close={() => setIsPopupOpen(false)}
         submit={addTodoPopup}
-        initialDay={selectedDay === "All" ? "Mon" : selectedDay}
+        initialDay={selectedDay === "All" ? "-" : selectedDay}
       />
 
     </div>

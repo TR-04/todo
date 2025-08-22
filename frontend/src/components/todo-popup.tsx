@@ -17,7 +17,7 @@ const TodoPopup = ({ isOpen, close, submit, initialDay }: TodoPopupProps) => {
   // So we need to update initial day whenever we open creat, thus, we use useeffect
   const [selectedDay, setSelectedDay] = useState(initialDay);
 
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "-"];
 
   // Update our selected day everytime initial day changes
   // since the component only mounts once (we always use starting
@@ -46,16 +46,17 @@ const TodoPopup = ({ isOpen, close, submit, initialDay }: TodoPopupProps) => {
           onChange={(e) => setText(e.target.value)}
         />
 
+        <span className='text-gray-600 mt-2 text-sm'>Due</span>
         <input
-          className="focus:outline-none border-b border-gray-300 w-120 mb-6 text-sm"
+          className="focus:outline-none border-b border-black w-120 mb-6 text-sm"
           type="date"
           value={deadline}
           onChange={(e) => setDeadline(e.target.value)}
         />
 
         <div className="mb-6">
-          <div className="text-sm text-gray-600 mb-3">Select Day:</div>
-          <div className="flex flex-row gap-3 justify-center">
+          <span className='text-gray-600 mt-2 text-sm'>Day</span>
+          <div className="flex flex-row gap-3 justify-center flex-wrap">
             {days.map((day) => (
               <div
                 key={day}
