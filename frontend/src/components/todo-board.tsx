@@ -1,5 +1,5 @@
 import { PackagePlus, Package, PackageCheck, Send, Trash, FunnelPlus, ArrowDownUp, BookCheck } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TodoPopup from "./todo-popup";
 
 interface Todo {
@@ -13,6 +13,9 @@ interface Todo {
 const Todo = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState("All");
+
+  // Will only every call close once now memoisation
+  const handleClose = useCallback(() => setIsPopupOpen(false), []);
 
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "All"];
 
@@ -80,6 +83,29 @@ const Todo = () => {
   const filteredTodos = selectedDay === "All" 
     ? todos 
     : todos.filter(todo => todo.day === selectedDay);
+
+
+  useEffect(() => {
+    const hotkeys = (e: KeyboardEvent) => {
+      const dayNum = parseInt(e.key);
+      if (dayNum >= 1 && dayNum <= 8) {
+        setSelectedDay(days[dayNum - 1]);
+      }
+
+      if (e.key === "C") {
+        e.preventDefault(); 
+        setIsPopupOpen(true); 
+      }
+    }
+
+    // Stop calling once popup is open otherwise, C becomes unavailable
+    if (!isPopupOpen) document.addEventListener('keydown', hotkeys);
+
+    return () => {
+      document.removeEventListener('keydown', hotkeys);
+    }
+
+  }, [isPopupOpen]);
   
   return (
     <div className="font-geist flex flex-col items-center mt-50">
@@ -182,7 +208,7 @@ const Todo = () => {
 
       <TodoPopup
         isOpen={isPopupOpen}
-        close={() => setIsPopupOpen(false)}
+        close={handleClose}
         submit={addTodoPopup}
         initialDay={selectedDay === "All" ? "-" : selectedDay}
       />
