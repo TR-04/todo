@@ -1,25 +1,27 @@
+import { CodeXml } from "lucide-react";
+import { useState, useCallback } from "react";
+import InfoPopup from "./info-popup";
 
 const Footer = () => {
+  const[infoIsOpen, setInfoIsOpen] = useState(false);
+  const handleClose = useCallback(() => setInfoIsOpen(false), []);
+
   return (
-    <div className="flex justify-center w-full h-10 mt-10 bg-pink-200 bottom-0 items-center gap-1">
-      Hosted by 
+    <div className="flex w-full h-10 mt-10 bottom-0 justify-end pr-4 items-center gap-1 text-xs">
+      <CodeXml 
+        size={16} 
+        className="text-purple-500 duration-300 transition-all hover:scale-130 cursor-pointer"
+        onClick={() => setInfoIsOpen(!infoIsOpen)}
+      />
 
-      <a 
-        href="https://vercel.com/tr-04s-projects"
-        target="_blank"
-        className="text-sm text-purple-500">Vercel,
-      </a>
+      <InfoPopup
+        isOpen={infoIsOpen}
+        close={handleClose}
+      />
 
-      made by
-
-      <a 
-        href="https://github.com/TR-04" 
-        target="_blank" 
-        className="text-blue-500"
-      >
-        TR-04
-      </a>
     </div>
+
+
   );
 }
 

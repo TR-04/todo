@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
 interface TodoPopupProps {
@@ -11,6 +11,7 @@ interface TodoPopupProps {
 const TodoPopup = ({ isOpen, close, submit, initialDay }: TodoPopupProps) => {
   const [text, setText] = useState('');
   const [deadline, setDeadline] = useState('');
+  const todoInputRef = useRef<HTMLInputElement>(null);
 
   // To prevent reinitialisation, the value does not change from the first mount
   // It mounts first, then when we open up the create menu it stays as this value forever
@@ -25,13 +26,32 @@ const TodoPopup = ({ isOpen, close, submit, initialDay }: TodoPopupProps) => {
   useEffect(() => {
     setSelectedDay(initialDay);
   }, [initialDay]);
+  
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+
+    if (isOpen) document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, close]);
 
   if (!isOpen) return null; 
+
+  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  }
 
   const handleSubmit = () => {
     if (text.trim()) {
       submit(text, selectedDay, deadline);
       setText('');
+      setTimeout(() => todoInputRef.current?.focus(), 0);
     }
   };
 
@@ -39,11 +59,14 @@ const TodoPopup = ({ isOpen, close, submit, initialDay }: TodoPopupProps) => {
     <div className='fixed inset-0 bg-gray-900/50 flex items-center justify-center z-50'>
       <div className='bg-white p-6 flex flex-col rounded-lg shadow-lg'>
         <input
+          ref={todoInputRef}
           className="focus:outline-none border-b border-black w-120 mb-4"
           type="text"
           placeholder="New package"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          autoFocus
+          onKeyDown={(e) => handleEnter(e)}
         />
 
         <span className='text-gray-600 mt-2 text-sm'>Due</span>
