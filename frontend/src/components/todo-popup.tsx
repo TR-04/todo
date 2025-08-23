@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { X } from "lucide-react";
 
 interface TodoPopupProps {
   isOpen: boolean;
@@ -9,8 +9,8 @@ interface TodoPopupProps {
 }
 
 const TodoPopup = ({ isOpen, close, submit, initialDay }: TodoPopupProps) => {
-  const [text, setText] = useState('');
-  const [deadline, setDeadline] = useState('');
+  const [text, setText] = useState("");
+  const [deadline, setDeadline] = useState("");
   const todoInputRef = useRef<HTMLInputElement>(null);
 
   // To prevent reinitialisation, the value does not change from the first mount
@@ -26,41 +26,40 @@ const TodoPopup = ({ isOpen, close, submit, initialDay }: TodoPopupProps) => {
   useEffect(() => {
     setSelectedDay(initialDay);
   }, [initialDay]);
-  
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
+      if (e.key === "Escape") close();
     };
 
-    if (isOpen) document.addEventListener('keydown', handleEscape);
+    if (isOpen) document.addEventListener("keydown", handleEscape);
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, [isOpen, close]);
 
-  if (!isOpen) return null; 
+  if (!isOpen) return null;
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSubmit();
     }
-  }
+  };
 
   const handleSubmit = () => {
     if (text.trim()) {
       submit(text, selectedDay, deadline);
-      setText('');
+      setText("");
       setTimeout(() => todoInputRef.current?.focus(), 0);
     }
   };
 
   return (
-    <div className='fixed inset-0 bg-gray-900/50 flex items-center justify-center z-50'>
-      <div className='bg-white p-6 flex flex-col rounded-lg shadow-lg'>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50">
+      <div className="flex flex-col rounded-lg bg-white p-6 shadow-lg">
         <input
           ref={todoInputRef}
-          className="focus:outline-none border-b border-black w-120 mb-4"
+          className="mb-4 w-120 border-b border-black focus:outline-none"
           type="text"
           placeholder="New package"
           value={text}
@@ -69,23 +68,23 @@ const TodoPopup = ({ isOpen, close, submit, initialDay }: TodoPopupProps) => {
           onKeyDown={(e) => handleEnter(e)}
         />
 
-        <span className='text-gray-600 mt-2 text-sm'>Due</span>
+        <span className="mt-2 text-sm text-gray-600">Due</span>
         <input
-          className="focus:outline-none border-b border-black w-120 mb-6 text-sm"
+          className="mb-6 w-120 border-b border-black text-sm focus:outline-none"
           type="date"
           value={deadline}
           onChange={(e) => setDeadline(e.target.value)}
         />
 
         <div className="mb-6">
-          <span className='text-gray-600 mt-2 text-sm'>Day</span>
-          <div className="flex flex-row gap-3 justify-center flex-wrap">
+          <span className="mt-2 text-sm text-gray-600">Day</span>
+          <div className="flex flex-row flex-wrap justify-center gap-3">
             {days.map((day) => (
               <div
                 key={day}
-                className={`flex rounded-full border-1 p-2 h-10 w-10 justify-center items-center cursor-pointer select-none text-sm ${
-                  selectedDay === day 
-                    ? "bg-blue-200 border-blue-500 text-blue-700" 
+                className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-1 p-2 text-sm select-none ${
+                  selectedDay === day
+                    ? "border-blue-500 bg-blue-200 text-blue-700"
                     : "hover:bg-gray-100"
                 }`}
                 onClick={() => setSelectedDay(day)}
@@ -96,18 +95,18 @@ const TodoPopup = ({ isOpen, close, submit, initialDay }: TodoPopupProps) => {
           </div>
         </div>
 
-        <button 
-          className="cursor-pointer self-center mb-3 hover:text-blue-600 transition-colors" 
+        <button
+          className="mb-3 cursor-pointer self-center transition-colors hover:text-blue-600"
           onClick={handleSubmit}
         >
           create
         </button>
 
-        <button 
-          className="cursor-pointer flex self-center w-auto text-gray-500 hover:text-gray-700" 
+        <button
+          className="flex w-auto cursor-pointer self-center text-gray-500 hover:text-gray-700"
           onClick={close}
         >
-          <X size={20}/>
+          <X size={20} />
         </button>
       </div>
     </div>
