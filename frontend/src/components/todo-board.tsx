@@ -1,4 +1,4 @@
-import { PackagePlus, Package, PackageCheck, Send, Trash, FunnelPlus, ArrowDownUp, BookCheck } from "lucide-react";
+import { PackagePlus, Package, PackageCheck, Send, Trash, FunnelPlus, ArrowDownUp, BookCheck, Flower2 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import TodoPopup from "./todo-popup";
 
@@ -154,9 +154,24 @@ const Todo = () => {
           <PackagePlus size={22} />
         </button>
       </div>
-
+      
+      {/* Todo display */}
       <div className="flex flex-col justify-center gap-5 h-auto pt-5 w-auto items-center">
-        {filteredTodos.map((todo) => (
+        {filteredTodos.length === 0 ? (
+          <div className="text-gray-500 text-base">
+            {selectedDay === "All" ? (
+              <div className="flex flex-row gap-1 mt-5"> Nothing here! <Flower2/></div>
+              
+            ) : (
+              <div className="flex flex-row gap-1 mt-5"> Your {selectedDay} is free! <Flower2/></div>
+              
+              )
+            }
+
+          </div>
+        )
+        :
+        (filteredTodos.map((todo) => (
           <div className="flex flex-row" key={todo.id}>
             <div className="flex justify-center px-2 h-auto border-1 border-r-0 rounded-l-lg bg-red-200 border-red-500">
               <button
@@ -203,7 +218,7 @@ const Todo = () => {
               </button>
             </div>
           </div>
-        ))}
+        )))}
       </div>
 
       <TodoPopup
